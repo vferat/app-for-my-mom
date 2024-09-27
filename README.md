@@ -4,3 +4,5 @@
 
 npm create vite@latest app-for-my-mom -- --template vue
 npm install bootstrap
+
+npm run dev

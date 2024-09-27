@@ -10,7 +10,17 @@ export default defineConfig({
       registerType: 'autoUpdate',
       devOptions: {
         enabled: true
-      }})
+      },
+      manifest: {
+        "name": "App for my Mom",
+        "short_name": "AFMM",
+        "theme_color": "#42b983",
+        "background_color": "#ffffff",
+        "display": "standalone",
+        "scope": "/",
+        "start_url": "/"
+      }
+      })
   ],
   base: '/app-for-my-mom/'
 })

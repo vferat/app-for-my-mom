@@ -1,8 +1,8 @@
 <template>
   <div class="container mt-2">
     <!-- Words to find -->
-    <div class="row mb-4">
-      <h4>Words to Find:</h4>
+    <div class="row mb-2">
+      <h4>Mots à trouver:</h4>
       <div class="col">
         <div v-for="(word, index) in wordsToFind" :key="index">
           <span v-if="foundWords.includes(word)" class="found-word">{{ word }}</span>
@@ -66,8 +66,8 @@
 
     <!-- Result of the word check -->
     <div v-if="checkResult !== null" class="mt-3 text-center">
-      <p v-if="checkResult">The word "{{ formedWord }}" exists in the dictionary.</p>
-      <p v-else>The word "{{ formedWord }}" does not exist in the dictionary.</p>
+      <p v-if="checkResult">Le mot "{{ formedWord }}" existe.</p>
+      <p v-else>Le mot "{{ formedWord }}" n'existe pas.</p>
     </div>
   </div>
 </template>
