@@ -24,7 +24,7 @@ jobs:
         working-directory: ./app-for-my-mom
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.6.4
         with:
           folder: ./app-for-my-mom/dist
           branch: gh-pages
