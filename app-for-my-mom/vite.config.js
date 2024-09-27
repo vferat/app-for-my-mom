@@ -12,4 +12,5 @@ export default defineConfig({
         enabled: true
       }})
   ],
+  base: '/app-for-my-mom/'
 })
