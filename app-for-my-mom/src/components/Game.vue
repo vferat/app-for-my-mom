@@ -70,21 +70,20 @@
 </template>
 
 <script>
+import words from '../assets/words.json'
+import lemmes from '../assets/lemmes.json'
+
 export default {
   name: 'Game',
   data() {
     return {
       letters: [
-        { id: 1, letter: 'A', disabled: false, selection_order: null },
-        { id: 2, letter: 'B', disabled: false, selection_order: null },
-        { id: 3, letter: 'C', disabled: false, selection_order: null },
-        { id: 4, letter: 'D', disabled: false, selection_order: null },
-        { id: 5, letter: 'E', disabled: false, selection_order: null }
       ],
       checkResult: null, // To hold the result of the word check
       formedWord: "", // To hold the formed word
-      validWords: ["AB", "AC", "AD", "AE", "ABC", "BAD", "CAB"], // Mock list of valid words
-      wordsToFind: ["AB", "CAB", "DE"], // List of words to find
+      dictionary: [], // valid words
+      lemmes: [], // lemmes
+      wordsToFind: [], // List of words to find
       foundWords: [], // Track words that have been found
       bonusPoints: 0 // Track bonus points
     };
@@ -133,7 +132,7 @@ export default {
         .join('');
 
       // Use the mock function to check if the word exists
-      const wordExists = this.validWords.includes(this.formedWord);
+      const wordExists = this.dictionary.includes(this.formedWord);
       this.checkResult = wordExists;
 
       // Check if the word is in the wordsToFind list
@@ -154,10 +153,73 @@ export default {
         letter.selection_order = null; // Clear selection order
         letter.disabled = false; // Re-enable button
       });
+    },
+    canFormWord(word, letterList) {
+      // Create a copy of letterList so we can modify it without changing the original
+      let availableLetters = [...letterList];
+
+      // Try to build the word letter by letter
+      for (let letter of word) {
+          let index = availableLetters.indexOf(letter);
+          if (index === -1) {
+              // Letter not available in the letterList
+              return false;
+          }
+          // Remove the used letter from the available letters
+          availableLetters.splice(index, 1);
+      }
+
+      // If we have successfully gone through all letters, the word can be formed
+      return true;
+    },
+    findAllLemmes() {
+        let letterList = this.letters.map(letter => letter.letter).join('');
+        return this.lemmes.filter(word => this.canFormWord(word, letterList));
     }
   },
   mounted() {
-    console.log('Dataset mounted.');
+    this.dictionary = words;
+    this.lemmes = lemmes;
+    const nLetters = 10;
+    const nWord2Find = 5;
+
+    const nCharWords =  this.lemmes.filter(word => word.length === nLetters);
+    const randomWord = nCharWords[Math.floor(Math.random() * nCharWords.length)];
+    console.log(randomWord);
+
+    // Convert the word into an array of characters
+    const letters = randomWord.split('');
+
+    // Shuffle the array using Fisher-Yates shuffle algorithm
+    for (let i = letters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]];  // Swap
+    }
+
+    for (var i = 0; i < nLetters; i++) {
+      var letter = letters[i];
+      var d = { id: i+1, letter: letter, disabled: false, selection_order: null };
+      this.letters.push(d);
+    }
+
+    let validWords = this.findAllLemmes();
+
+    if (validWords.length < nWord2Find) {
+      // Retry if there are not enough words to find
+      console.log("Not enough words to find. Generating new words...");
+      this.mounted();
+      return;
+    }
+    else {
+      // Shuffle the array using Fisher-Yates shuffle algorithm
+      for (let i = validWords.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [validWords[i], validWords[j]] = [validWords[j], validWords[i]];  // Swap
+      }
+      // Select the first nWord2Find words
+      this.wordsToFind = validWords.slice(0, nWord2Find);
+      console.log(this.wordsToFind);
+    }
   }
 };
 </script>
