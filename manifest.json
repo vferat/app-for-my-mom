@@ -1,9 +1,0 @@
-{
-    "name": "App for my Mom",
-    "short_name": "AFMM",
-    "theme_color": "#42b983",
-    "background_color": "#ffffff",
-    "display": "standalone",
-    "scope": "/",
-    "start_url": "/"
-}
