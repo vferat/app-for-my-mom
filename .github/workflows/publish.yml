@@ -15,18 +15,17 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
 
-      - name: Project directory
-        run: cd ./app-for-my-mom
-
       - name: Install dependencies
         run: npm install
+        working-directory: ./app-for-my-mom
 
       - name: Build project
         run: npm run build
+        working-directory: ./app-for-my-mom
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./dist
+          folder: ./app-for-my-mom/dist
           clean-exclude: pr-preview
           branch: gh-pages
