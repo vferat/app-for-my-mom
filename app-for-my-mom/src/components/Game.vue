@@ -26,6 +26,13 @@
       </div>
     </div>
 
+    <!-- Result of the word check -->
+    <div v-if="checkResult !== null" class="mt-3 text-center">
+      <p v-if="checkResult">Le mot "{{ formedWord }}" existe.</p>
+      <p v-else>Le mot "{{ formedWord }}" n'existe pas.</p>
+    </div>
+
+
     <!-- Circle buttons -->
     <div class="circle-container mt-5 mb-5">
       <button
@@ -44,36 +51,24 @@
       <div class="text-center bonus">
         <h5>{{ bonusPoints }}</h5>
       </div>
-
-
     </div>
 
     <!-- Button to erase the last letter -->
     <div class="row mt-3">
-      <div class="col text-center">
-        <button type="button" class="btn btn-danger" @click="removeLastLetter">
-          Effacer la dernière lettre
+      <div class="col align-self-end">
+        <button type="button" class="btn btn-danger btn-lg" @click="removeLastLetter">
+          Effacer
         </button>
       </div>
-    </div>
-
-    <!-- Button to check the word -->
-    <div class="row mt-3">
-      <div class="col text-center">
-        <button type="button" class="btn btn-primary" @click="checkWord">
+      <div class="col align-self-end">
+        <button type="button" class="btn btn-primary btn-lg" @click="checkWord">
           Valider
         </button>
       </div>
     </div>
-
-    <!-- Result of the word check -->
-    <div v-if="checkResult !== null" class="mt-3 text-center">
-      <p v-if="checkResult">Le mot "{{ formedWord }}" existe.</p>
-      <p v-else>Le mot "{{ formedWord }}" n'existe pas.</p>
-    </div>
   </div>
 </template>
-
+  
 <script>
 import words from '../assets/words.json'
 import lemmes from '../assets/lemmes.json'
@@ -83,7 +78,7 @@ export default {
   data() {
     return {
       letters: [],
-      checkResult: null,
+      checkResult: false,
       formedWord: "",
       dictionary: [],
       lemmes: [],
@@ -284,14 +279,14 @@ export default {
 }
 
 .btn-primary {
-  width: 100%;
+  width: 40%;
   background-color: #CCB7AE !important; /* Warm brown for primary actions */
   border-color: #8d7e78;
   color: rgb(255, 255, 255);
 }
 
 .btn-danger {
-  width: 100%;
+  width: 40%;
   background-color: #A6808C !important; /* Deep grayish-purple for danger actions */
   border-color: #565264;
   color: white;
