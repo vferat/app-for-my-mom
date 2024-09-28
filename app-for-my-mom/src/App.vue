@@ -4,15 +4,10 @@ import Game from './components/Game.vue'
 </script>
 
 <template>
-  <div class="container">
+  <div class="container flex">
     <div class="row">
-      <h1>App for my mom</h1>
+      <Game/>
     </div>
-
-    <div class="row">
-      <Game msg="Hello Vue 3 + Vite" />
-    </div>
-
   </div>
 </template>
 

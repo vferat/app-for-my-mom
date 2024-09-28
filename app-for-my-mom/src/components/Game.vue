@@ -16,7 +16,7 @@
       <div v-for="(letter, index) in displayLetters" :key="index" class="col">
         <button 
           type="button" 
-          class="btn btn-secondary btn-custom" 
+          class="btn btn-secondary btn-custom uppercase-text" 
           :class="{ 'btn-success': letter.disabled }" 
           disabled>
           {{ letter.letter || '-' }}
@@ -25,18 +25,25 @@
     </div>
 
     <!-- Circle buttons -->
-    <div class="circle-container mt-5">
+    <div class="circle-container mt-5 mb-5">
       <button
         v-for="letter in letters"
         :key="letter.id"
         type="button"
-        class="btn btn-secondary circle-button"
+        class="btn btn-secondary circle-button uppercase-text"
         :disabled="letter.disabled"
         :style="{ top: `${letter.y}px`, left: `${letter.x}px` }"
         @click="addLetter(letter)"
       >
-        {{ letter.letter }}
+        {{ letter.letter || '-' }}
       </button>
+
+      <!-- Display score -->
+      <div class="text-center bonus">
+        <h5>{{ bonusPoints }}</h5>
+      </div>
+
+
     </div>
 
     <!-- Button to erase the last letter -->
@@ -54,13 +61,6 @@
         <button type="button" class="btn btn-primary" @click="checkWord">
           Check Word
         </button>
-      </div>
-    </div>
-
-    <!-- Display score -->
-    <div class="row mt-3">
-      <div class="col text-center">
-        <h5>Score: {{ bonusPoints }}</h5>
       </div>
     </div>
 
@@ -87,6 +87,7 @@ export default {
       lemmes: [],
       wordsToFind: [],
       foundWords: [],
+      checkedWords: [],
       bonusPoints: 0,
       nLetters: 7,  // Add this for use in mounted and displayLetters
     };
@@ -140,9 +141,14 @@ export default {
       }
 
       if (wordExists) {
-        this.bonusPoints += 1;
+        if (this.checkedWords.includes(this.formedWord)) {
+          console.log("Word already found.");
+        }
+        else {
+          this.bonusPoints += 1;
+          this.checkedWords.push(this.formedWord);
+        }
       }
-
       this.resetSelection();
     },
     resetSelection() {
@@ -166,47 +172,52 @@ export default {
       const letterList = this.letters.map(letter => letter.letter); // Changed to array
       return this.lemmes.filter(word => this.canFormWord(word, letterList));
     },
+    startGame() {
+      this.dictionary = words;
+      this.lemmes = lemmes;
+
+      const nWord2Find = 5;
+
+      // Get a random word from the lemmes with a length matching nLetters
+      const nCharWords = this.lemmes.filter(word => word.length === this.nLetters);
+      const randomWord = nCharWords[Math.floor(Math.random() * nCharWords.length)];
+
+      const letters = randomWord.split('');
+      for (let i = letters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]];
+      }
+
+      const angleStep = (2 * Math.PI) / this.nLetters;
+      const radius = 125;
+
+      for (let i = 0; i < this.nLetters; i++) {
+        const letter = letters[i];
+        const angle = i * angleStep;
+        const x = radius + radius * Math.cos(angle);
+        const y = radius + radius * Math.sin(angle);
+        this.letters.push({ id: i + 1, letter: letter, disabled: false, selection_order: null, x: x, y: y });
+      }
+
+      let validWords = this.findAllLemmes();
+      if (validWords.length < nWord2Find) {
+        console.log("Not enough words to find.");
+        return;
+      }
+
+      for (let i = validWords.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [validWords[i], validWords[j]] = [validWords[j], validWords[i]];
+      }
+
+      this.wordsToFind = validWords.slice(0, nWord2Find);
+      this.wordsToFind.push(randomWord);
+      console.log(this.wordsToFind);
+    }
   },
 
   mounted() {
-    this.dictionary = words;
-    this.lemmes = lemmes;
-
-    const nWord2Find = 5;
-
-    // Get a random word from the lemmes with a length matching nLetters
-    const nCharWords = this.lemmes.filter(word => word.length === this.nLetters);
-    const randomWord = nCharWords[Math.floor(Math.random() * nCharWords.length)];
-
-    const letters = randomWord.split('');
-    for (let i = letters.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [letters[i], letters[j]] = [letters[j], letters[i]];
-    }
-
-    const angleStep = (2 * Math.PI) / this.nLetters;
-    const radius = 100;
-
-    for (let i = 0; i < this.nLetters; i++) {
-      const letter = letters[i];
-      const angle = i * angleStep;
-      const x = radius + radius * Math.cos(angle) - 25;
-      const y = radius + radius * Math.sin(angle) - 25;
-      this.letters.push({ id: i + 1, letter: letter, disabled: false, selection_order: null, x: x, y: y });
-    }
-
-    let validWords = this.findAllLemmes();
-    if (validWords.length < nWord2Find) {
-      console.log("Not enough words to find.");
-      return;
-    }
-
-    for (let i = validWords.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [validWords[i], validWords[j]] = [validWords[j], validWords[i]];
-    }
-
-    this.wordsToFind = validWords.slice(0, nWord2Find);
+    this.startGame();
   }
 };
 </script>
@@ -216,28 +227,40 @@ export default {
   position: relative;
   width: 300px;
   height: 300px;
-  border: 2px solid #4b1100;
+  border: 0px solid #4b1100;
   border-radius: 50%;
   margin: 0 auto;
 }
 
 .circle-button {
   position: absolute;
-  width: 50px;
-  height: 50px;
-  transform: translate(100%, 100%);
+  width: 75px;
+  height: 75px;
+  transform: translate(0%, 0%);
   padding: 10px;
   background-color: #42b983;
   color: white;
   border: none;
   border-radius: 50%;
+  font-size : 150%;
 }
 
 .btn-custom {
   width: 60px;
   height: 60px;
   padding: 10px;
-  border-radius: 10%;
+  border-radius: 20%;
+  font-size : 150%;
+  background-color: #b2b2b2c7;
+  border: 2px
+}
+
+.bonus {
+  position: absolute;
+  transform: translate(0%, 0%);
+  top: 150px;
+  left: 50%;
+  font-size : 150%;
 }
 
 
@@ -246,9 +269,13 @@ export default {
   color: white !important; /* White text */
 }
 
+.btn-primary {
+  width: 100%; /* Full width for the erase button */
+}
+
+
 .btn-danger {
   width: 100%; /* Full width for the erase button */
-  height: 50px; /* Fixed height for the erase button */
 }
 
 .found-word {
@@ -258,5 +285,9 @@ export default {
 
 .hidden-word {
   color: gray; /* Color for hidden words */
+}
+
+.uppercase-text {
+      text-transform: uppercase;
 }
 </style>
