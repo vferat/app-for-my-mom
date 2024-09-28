@@ -9,7 +9,7 @@ import Game from './components/Game.vue'
 <style>
 body {
   background-color: #D6CFCB;
-  height: 100vh;
+  height: 100%;
   margin: 0;
   background-attachment: fixed;
   background: #D6CFCB !important; /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */

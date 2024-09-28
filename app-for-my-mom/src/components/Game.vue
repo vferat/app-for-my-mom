@@ -279,14 +279,14 @@ export default {
 }
 
 .btn-primary {
-  width: 40%;
+  width: 60%;
   background-color: #CCB7AE !important; /* Warm brown for primary actions */
   border-color: #8d7e78;
   color: rgb(255, 255, 255);
 }
 
 .btn-danger {
-  width: 40%;
+  width: 60%;
   background-color: #A6808C !important; /* Deep grayish-purple for danger actions */
   border-color: #565264;
   color: white;
