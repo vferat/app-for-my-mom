@@ -1,12 +1,14 @@
 <template>
-  <div class="container mt-2">
+  <div class="container-fluid mt-2">
     <!-- Words to find -->
     <div class="row mb-2">
       <h4>Mots à trouver:</h4>
       <div class="col">
         <div v-for="(word, index) in wordsToFind" :key="index">
-          <span v-if="foundWords.includes(word)" class="found-word">{{ word }}</span>
-          <span v-else>{{ '*'.repeat(word.length) }}</span>
+          <div v-for="letter in word" :key="letter" class="d-inline-block">
+            <button class="btn btn-secondary btn-hiddenword found-word" v-if="foundWords.includes(word)" disabled>{{ letter }}</button>
+            <button class="btn btn-secondary btn-hiddenword found-word" v-else disabled> - </button>
+          </div>
         </div>
       </div>
     </div>
@@ -17,7 +19,7 @@
         <button 
           type="button" 
           class="btn btn-secondary btn-custom uppercase-text" 
-          :class="{ 'btn-success': letter.disabled }" 
+          :class="{ 'btn-currentword': letter.disabled }" 
           disabled>
           {{ letter.letter || '-' }}
         </button>
@@ -50,7 +52,7 @@
     <div class="row mt-3">
       <div class="col text-center">
         <button type="button" class="btn btn-danger" @click="removeLastLetter">
-          Erase Last Letter
+          Effacer la dernière lettre
         </button>
       </div>
     </div>
@@ -59,7 +61,7 @@
     <div class="row mt-3">
       <div class="col text-center">
         <button type="button" class="btn btn-primary" @click="checkWord">
-          Check Word
+          Valider
         </button>
       </div>
     </div>
@@ -227,7 +229,6 @@ export default {
   position: relative;
   width: 300px;
   height: 300px;
-  border: 0px solid #4b1100;
   border-radius: 50%;
   margin: 0 auto;
 }
@@ -238,11 +239,11 @@ export default {
   height: 75px;
   transform: translate(0%, 0%);
   padding: 10px;
-  background-color: #42b983;
+  background-color: #CCB7AE; /* Warm brown for active buttons */
   color: white;
   border: none;
   border-radius: 50%;
-  font-size : 150%;
+  font-size: 150%;
 }
 
 .btn-custom {
@@ -250,9 +251,22 @@ export default {
   height: 60px;
   padding: 10px;
   border-radius: 20%;
-  font-size : 150%;
-  background-color: #b2b2b2c7;
-  border: 2px
+  font-size: 150%;
+  background-color: #706677; /* Lighter grayish-purple for inactive buttons */
+  color: white;
+  border: 2px solid #565264; /* Deep grayish-purple border */
+  border-color:  #706677;
+}
+
+.btn-hiddenword {
+  width: 60px;
+  height: 60px;
+  padding: 10px;
+  border-radius: 0%;
+  font-size: 150%;
+  background-color: #CCB7AE !important;  /* Lighter grayish-purple for word buttons */
+  color: white;
+  border: 2px solid #565264; /* Deep grayish-purple border */
 }
 
 .bonus {
@@ -260,34 +274,46 @@ export default {
   transform: translate(0%, 0%);
   top: 150px;
   left: 50%;
-  font-size : 150%;
+  font-size: 150%;
+  color: #565264; /* Deep grayish-purple for bonus points text */
 }
 
-
-.btn-success {
-  background-color: #28a745 !important; /* Green color */
-  color: white !important; /* White text */
+.btn-currentword {
+  background-color: #706677 !important; /* Green color for success */
+  color: white !important;
 }
 
 .btn-primary {
-  width: 100%; /* Full width for the erase button */
+  width: 100%;
+  background-color: #CCB7AE !important; /* Warm brown for primary actions */
+  border-color: #8d7e78;
+  color: rgb(255, 255, 255);
 }
 
-
 .btn-danger {
-  width: 100%; /* Full width for the erase button */
+  width: 100%;
+  background-color: #A6808C !important; /* Deep grayish-purple for danger actions */
+  border-color: #565264;
+  color: white;
 }
 
 .found-word {
-  color: green; /* Color for found words */
+  color: #ffffff !important; /* Green color for found words */
   font-weight: bold;
 }
 
 .hidden-word {
-  color: gray; /* Color for hidden words */
+  color: #706677; /* Grayish-purple for hidden words */
 }
 
 .uppercase-text {
-      text-transform: uppercase;
+  text-transform: uppercase;
+  color: #706677; /* Lighter grayish-purple for text */
+}
+
+.container {
+  background-color: #D6CFCB; /* Soft neutral background */
+  padding: 20px;
+  border-radius: 10px;
 }
 </style>
